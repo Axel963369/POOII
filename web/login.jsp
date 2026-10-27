@@ -12,7 +12,7 @@
 
 <nav class="navbar">
     <div class="logo">
-        ◈ <span>TECH</span> LOGIN SYSTEM
+        ◈ <span>SOFT</span> QUALITY SYSTEM
     </div>
 </nav>
 

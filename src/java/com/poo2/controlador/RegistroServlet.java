@@ -1,8 +1,7 @@
 
 package com.poo2.controlador;
 
-import com.poo2.dao.UsuarioDAO;
-import com.poo2.modelo.Usuario;
+import com.poo2.servicio.AutenticacionService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -12,37 +11,48 @@ import java.io.IOException;
 
 @WebServlet("/registro")
 public class RegistroServlet extends HttpServlet {
+
+    private final AutenticacionService autenticacion =
+            AutenticacionService.getInstancia();
+
     @Override
-    protected void doPost(
-            HttpServletRequest request,
-            HttpServletResponse response)
+    protected void doPost(HttpServletRequest request,
+                          HttpServletResponse response)
             throws ServletException, IOException {
 
         String nombre = request.getParameter("nombre");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        Usuario usuario = new Usuario();
+        try {
+            boolean registrado = autenticacion.registrarUsuario(
+                    nombre, email, password);
 
-        usuario.setNombre(nombre);
-        usuario.setEmail(email);
+            if (registrado) {
+                response.sendRedirect(
+                        request.getContextPath() + "/login.jsp");
+            } else {
+                request.setAttribute("error",
+                        "No se pudo registrar la cuenta. "
+                        + "Comprueba si el correo ya está registrado.");
 
-        UsuarioDAO dao = new UsuarioDAO();
+                request.getRequestDispatcher("/registro.jsp")
+                        .forward(request, response);
+            }
 
-        boolean registrado = dao.registrar(usuario, password);
+        } catch (IllegalArgumentException e) {
+            request.setAttribute("error", e.getMessage());
 
-        if (registrado) {
+            request.getRequestDispatcher("/registro.jsp")
+                    .forward(request, response);
 
-            response.sendRedirect(
-                    request.getContextPath() + "/login.jsp"
-            );
+        } catch (RuntimeException e) {
+            getServletContext().log(
+                    "Error interno durante el registro.", e);
 
-        } else {
-
-            request.setAttribute(
-                    "error",
-                    "El correo ya existe u ocurrió un error."
-            );
+            request.setAttribute("error",
+                    "No se pudo completar el registro. "
+                    + "Inténtalo más tarde.");
 
             request.getRequestDispatcher("/registro.jsp")
                     .forward(request, response);

@@ -7,7 +7,7 @@
 
 <nav class="navbar">
     <div class="logo">
-        ◈ <span>TECH</span> LOGIN SYSTEM
+        ◈ <span>SOFT</span> QUALITY SYSTEM
     </div>
 </nav>
 
@@ -25,9 +25,8 @@
         </h1>
 
         <p>
-            Plataforma web desarrollada con Java, JSP y
-            PostgreSQL(Neon) para la gestión
-            segura de usuarios.
+            Plataforma web desarrollada para el curso
+            de POO-II
         </p>
 
         <div class="buttons">
